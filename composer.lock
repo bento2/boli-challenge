@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "718a911c430a96f8ac48082d30d88f8e",
+    "content-hash": "372b3dbccbc4ee792782ed2febcb7fb0",
     "packages": [
         {
             "name": "doctrine/cache",
@@ -510,6 +510,94 @@
                 }
             ],
             "time": "2025-11-21T08:10:16+00:00"
+        },
+        {
+            "name": "doctrine/mongodb-odm-bundle",
+            "version": "5.5.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/doctrine/DoctrineMongoDBBundle.git",
+                "reference": "502f2c0102d44de3d6a207833a6a475e54e1ba02"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/doctrine/DoctrineMongoDBBundle/zipball/502f2c0102d44de3d6a207833a6a475e54e1ba02",
+                "reference": "502f2c0102d44de3d6a207833a6a475e54e1ba02",
+                "shasum": ""
+            },
+            "require": {
+                "composer-runtime-api": "^2.0",
+                "doctrine/mongodb-odm": "^2.6",
+                "doctrine/persistence": "^3.0 || ^4.0",
+                "ext-mongodb": "^1.21 || ^2",
+                "php": "^8.1",
+                "psr/log": "^1.0 || ^2.0 || ^3.0",
+                "symfony/config": "^6.4 || ^7.0 || ^8.0",
+                "symfony/console": "^6.4 || ^7.0 || ^8.0",
+                "symfony/dependency-injection": "^6.4 || ^7.0 || ^8.0",
+                "symfony/doctrine-bridge": "^6.4 || ^7.0 || ^8.0",
+                "symfony/framework-bundle": "^6.4 || ^7.0 || ^8.0",
+                "symfony/http-kernel": "^6.4 || ^7.0 || ^8.0",
+                "symfony/options-resolver": "^6.4 || ^7.0 || ^8.0"
+            },
+            "conflict": {
+                "doctrine/data-fixtures": "<1.8 || >=3"
+            },
+            "require-dev": {
+                "composer/semver": "^3.4",
+                "doctrine/coding-standard": "^14.0",
+                "doctrine/data-fixtures": "^1.8 || ^2.0",
+                "phpstan/phpstan": "^2.1",
+                "phpunit/phpunit": "^10.5",
+                "squizlabs/php_codesniffer": "^4",
+                "symfony/browser-kit": "^6.4 || ^7.0 || ^8.0",
+                "symfony/form": "^6.4 || ^7.0 || ^8.0",
+                "symfony/messenger": "^6.4 || ^7.0 || ^8.0",
+                "symfony/phpunit-bridge": "^6.4.1 || ^7.0.1",
+                "symfony/security-bundle": "^6.4 || ^7.0 || ^8.0",
+                "symfony/stopwatch": "^6.4 || ^7.0 || ^8.0",
+                "symfony/validator": "^6.4 || ^7.0 || ^8.0",
+                "symfony/yaml": "^6.4 || ^7.0 || ^8.0"
+            },
+            "suggest": {
+                "doctrine/data-fixtures": "Load data fixtures"
+            },
+            "type": "symfony-bundle",
+            "autoload": {
+                "psr-4": {
+                    "Doctrine\\Bundle\\MongoDBBundle\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Bulat Shakirzyanov",
+                    "email": "mallluhuct@gmail.com"
+                },
+                {
+                    "name": "Kris Wallsmith",
+                    "email": "kris@symfony.com"
+                },
+                {
+                    "name": "Jonathan H. Wage",
+                    "email": "jonwage@gmail.com"
+                }
+            ],
+            "description": "Symfony Doctrine MongoDB Bundle",
+            "homepage": "http://www.doctrine-project.org",
+            "keywords": [
+                "mongodb",
+                "persistence",
+                "symfony"
+            ],
+            "support": {
+                "issues": "https://github.com/doctrine/DoctrineMongoDBBundle/issues",
+                "source": "https://github.com/doctrine/DoctrineMongoDBBundle/tree/5.5.1"
+            },
+            "time": "2025-11-19T13:25:47+00:00"
         },
         {
             "name": "doctrine/persistence",
@@ -1790,6 +1878,119 @@
             "time": "2024-09-25T14:21:43+00:00"
         },
         {
+            "name": "symfony/doctrine-bridge",
+            "version": "v7.3.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/doctrine-bridge.git",
+                "reference": "e7d308bd44ff8673a259e2727d13af6a93a5d83e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/doctrine-bridge/zipball/e7d308bd44ff8673a259e2727d13af6a93a5d83e",
+                "reference": "e7d308bd44ff8673a259e2727d13af6a93a5d83e",
+                "shasum": ""
+            },
+            "require": {
+                "doctrine/event-manager": "^2",
+                "doctrine/persistence": "^3.1|^4",
+                "php": ">=8.2",
+                "symfony/deprecation-contracts": "^2.5|^3",
+                "symfony/polyfill-ctype": "~1.8",
+                "symfony/polyfill-mbstring": "~1.0",
+                "symfony/service-contracts": "^2.5|^3"
+            },
+            "conflict": {
+                "doctrine/collections": "<1.8",
+                "doctrine/dbal": "<3.6",
+                "doctrine/lexer": "<1.1",
+                "doctrine/orm": "<2.15",
+                "symfony/cache": "<6.4",
+                "symfony/dependency-injection": "<6.4",
+                "symfony/form": "<6.4.6|>=7,<7.0.6",
+                "symfony/http-foundation": "<6.4",
+                "symfony/http-kernel": "<6.4",
+                "symfony/lock": "<6.4",
+                "symfony/messenger": "<6.4",
+                "symfony/property-info": "<6.4",
+                "symfony/security-bundle": "<6.4",
+                "symfony/security-core": "<6.4",
+                "symfony/validator": "<6.4"
+            },
+            "require-dev": {
+                "doctrine/collections": "^1.8|^2.0",
+                "doctrine/data-fixtures": "^1.1|^2",
+                "doctrine/dbal": "^3.6|^4",
+                "doctrine/orm": "^2.15|^3",
+                "psr/log": "^1|^2|^3",
+                "symfony/cache": "^6.4|^7.0",
+                "symfony/config": "^6.4|^7.0",
+                "symfony/dependency-injection": "^6.4|^7.0",
+                "symfony/doctrine-messenger": "^6.4|^7.0",
+                "symfony/expression-language": "^6.4|^7.0",
+                "symfony/form": "^6.4.6|^7.0.6",
+                "symfony/http-kernel": "^6.4|^7.0",
+                "symfony/lock": "^6.4|^7.0",
+                "symfony/messenger": "^6.4|^7.0",
+                "symfony/property-access": "^6.4|^7.0",
+                "symfony/property-info": "^6.4|^7.0",
+                "symfony/security-core": "^6.4|^7.0",
+                "symfony/stopwatch": "^6.4|^7.0",
+                "symfony/translation": "^6.4|^7.0",
+                "symfony/type-info": "^7.1.8",
+                "symfony/uid": "^6.4|^7.0",
+                "symfony/validator": "^6.4|^7.0",
+                "symfony/var-dumper": "^6.4|^7.0"
+            },
+            "type": "symfony-bridge",
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Bridge\\Doctrine\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Provides integration for Doctrine with various Symfony components",
+            "homepage": "https://symfony.com",
+            "support": {
+                "source": "https://github.com/symfony/doctrine-bridge/tree/v7.3.5"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/nicolas-grekas",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2025-09-27T09:00:46+00:00"
+        },
+        {
             "name": "symfony/dotenv",
             "version": "v7.3.2",
             "source": {
@@ -2770,6 +2971,77 @@
                 }
             ],
             "time": "2025-11-06T11:17:34+00:00"
+        },
+        {
+            "name": "symfony/options-resolver",
+            "version": "v7.3.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/options-resolver.git",
+                "reference": "0ff2f5c3df08a395232bbc3c2eb7e84912df911d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/options-resolver/zipball/0ff2f5c3df08a395232bbc3c2eb7e84912df911d",
+                "reference": "0ff2f5c3df08a395232bbc3c2eb7e84912df911d",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.2",
+                "symfony/deprecation-contracts": "^2.5|^3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\OptionsResolver\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Provides an improved replacement for the array_replace PHP function",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "config",
+                "configuration",
+                "options"
+            ],
+            "support": {
+                "source": "https://github.com/symfony/options-resolver/tree/v7.3.3"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/nicolas-grekas",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2025-08-05T10:16:07+00:00"
         },
         {
             "name": "symfony/polyfill-intl-grapheme",

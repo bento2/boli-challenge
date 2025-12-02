@@ -2,17 +2,78 @@ doctrine_mongodb:
     auto_generate_proxy_classes: true
     auto_generate_hydrator_classes: true
     connections:
-        default:
-            server: '%env(resolve:MONGODB_URI)%'
-            options: {}
-    default_database: '%env(resolve:MONGODB_DB)%'
+        # Connexion pour la base de test
+        test:
+            server: "%env(MONGODB_URL)%"
+            options:
+                username: "%env(MONGODB_USER)%"
+                password: "%env(MONGODB_PASSWORD)%"
+
+        # Connexion pour la base diabetes
+        diabetes:
+            server: "%env(MONGODB_URL)%"
+            options:
+                username: "%env(MONGODB_USER)%"
+                password: "%env(MONGODB_PASSWORD)%"
+
+        # Connexion pour la base wellness
+        wellness:
+            server: "%env(MONGODB_URL)%"
+            options:
+                username: "%env(MONGODB_USER)%"
+                password: "%env(MONGODB_PASSWORD)%"
+
+        # Connexion pour la base maternity
+        maternity:
+            server: "%env(MONGODB_URL)%"
+            options:
+                username: "%env(MONGODB_USER)%"
+                password: "%env(MONGODB_PASSWORD)%"
+    default_database: "%env(resolve:MONGODB_DB)%"
     document_managers:
-        default:
-            auto_mapping: true
+        # Document Manager pour test
+        test:
+            connection: test
+            database: test_db
             mappings:
-                App:
-                    dir: '%kernel.project_dir%/src/Document'
-                    prefix: 'App\Document'
+                Test:
+                    type: attribute
+                    dir: "%kernel.project_dir%/src/Document/Test"
+                    prefix: 'App\Document\Test'
+                    is_bundle: false
+
+        # Document Manager pour diabetes (par défaut)
+        default:
+            connection: diabetes
+            database: diabetes_db
+            mappings:
+                Diabetes:
+                    type: attribute
+                    dir: "%kernel.project_dir%/src/Document/Diabetes"
+                    prefix: 'App\Document\Diabetes'
+                    is_bundle: false
+
+        # Document Manager pour wellness
+        wellness:
+            connection: wellness
+            database: wellness_db
+            mappings:
+                Wellness:
+                    type: attribute
+                    dir: "%kernel.project_dir%/src/Document/Wellness"
+                    prefix: 'App\Document\Wellness'
+                    is_bundle: false
+
+        # Document Manager pour maternity
+        maternity:
+            connection: maternity
+            database: maternity_db
+            mappings:
+                Maternity:
+                    type: attribute
+                    dir: "%kernel.project_dir%/src/Document/Maternity"
+                    prefix: 'App\Document\Maternity'
+                    is_bundle: false
 
 when@prod:
     doctrine_mongodb:

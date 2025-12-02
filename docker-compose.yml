@@ -71,8 +71,5 @@ services:
 ###< doctrine/mongodb-odm-bundle ###
 
 volumes:
-  mongodb_data: {}
-
-###> doctrine/mongodb-odm-bundle ###
   mongodb_data:
-###< doctrine/mongodb-odm-bundle ###
+

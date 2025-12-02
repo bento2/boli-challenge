@@ -1,0 +1,4 @@
+kreait_firebase:
+    projects:
+        notification-api:
+            credentials: "%env(FIREBASE_CREDENTIALS)%"

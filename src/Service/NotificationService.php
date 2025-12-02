@@ -30,7 +30,7 @@ class NotificationService implements NotificationServiceInterface
     }
 
 
-    public function sendNotification(string $userId, string $type, string $title, string $body, array $data, string $serviceName): bool
+    public function sendNotification(string $userId, string $type, string $title, string $body = "", array $data = [], string $serviceName = ""): bool
     {
         $typeNotification = NotificationType::fromString($type);
 

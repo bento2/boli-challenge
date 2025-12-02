@@ -8,6 +8,8 @@ FROM php:8.4-cli
 RUN apt update && apt install -y \
     git \
     libzip-dev \
+    && pecl install xdebug \
+    && docker-php-ext-enable xdebug \
     # Nettoyage pour réduire la taille de l'image
     && rm -rf /var/lib/apt/lists/*
 

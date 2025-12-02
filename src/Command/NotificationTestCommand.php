@@ -47,15 +47,15 @@ class NotificationTestCommand extends Command
         try {
             $resultat = $this->notificationService->sendNotification($userId, $type, "Notification de test");
             if($resultat) {
-                $io->success("La notification est bien partie");
+                $io->success("Succès : La notification est bien partie");
             }else{
                 $io->writeln("\033[35mIl y a eu une erreur lors de la notification\033[0m");
-                $io->error("Notification non envoyée");
+                $io->error("Echec : Notification non envoyée");
                 return Command::FAILURE;
             }
 
         } catch (\Exception $exception) {
-            $io->error($exception->getMessage());
+            $io->error("Echec : ".$exception->getMessage());
             return Command::FAILURE;
         }
 

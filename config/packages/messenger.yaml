@@ -1,22 +1,54 @@
 framework:
     messenger:
-        # Uncomment this (and the failed transport below) to send failed messages to this transport for later handling.
-        # failure_transport: failed
+        # Send failed messages to the failed transport for later handling
+        failure_transport: failed
 
         transports:
-            # https://symfony.com/doc/current/messenger.html#transport-configuration
-            # async: '%env(MESSENGER_TRANSPORT_DSN)%'
-            # failed: 'doctrine://default?queue_name=failed'
-            sync: 'sync://'
+            # Transport for notifications - Topic exchange avec routing key notification.*
+            notifications:
+                dsn: "%env(MESSENGER_TRANSPORT_DSN)%"
+                options:
+                    exchange:
+                        name: notification-api
+                        type: topic
+                    queues:
+                        notifications_queue:
+                            binding_keys: ["notification.*"]
+                retry_strategy:
+                    max_retries: 3
+                    delay: 2000
+                    multiplier: 2
+                    max_delay: 8000
+
+            # Transport for services - Fanout exchange
+            services:
+                dsn: "%env(MESSENGER_TRANSPORT_DSN)%"
+                options:
+                    exchange:
+                        name: services
+                        type: fanout
+                    queues:
+                        services_queue: ~
+
+            # Transport for failed messages
+            failed:
+                dsn: "%env(MESSENGER_TRANSPORT_DSN)%"
+                options:
+                    exchange:
+                        name: failed
+                        type: direct
+                    queues:
+                        failed_queue: ~
 
         routing:
             # Route your messages to the transports
-            # 'App\Message\YourMessage': async
+            # 'App\\Message\\SendNotificationMessage': notifications
+            # 'App\\Message\\NotificationStatusUpdateMessage': services
 
-# when@test:
-#    framework:
-#        messenger:
-#            transports:
-#                # replace with your transport name here (e.g., my_transport: 'in-memory://')
-#                # For more Messenger testing tools, see https://github.com/zenstruck/messenger-test
-#                async: 'in-memory://'
+when@test:
+    framework:
+        messenger:
+            transports:
+                notifications: "in-memory://"
+                services: "in-memory://"
+                failed: "in-memory://"

@@ -7,6 +7,7 @@ namespace App\Document;
 use App\Enum\NotificationServiceName;
 use App\Enum\NotificationStatus;
 use App\Enum\NotificationTypes;
+use App\Repositories\NotificationRepository;
 use DateTimeImmutable;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -15,7 +16,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Mappage du document avec les index composés.
  */
-#[ODM\Document(collection: 'notifications')]
+#[ODM\Document(collection: 'notifications',repositoryClass: NotificationRepository::class )]
 // Index Composé 1 : Pour récupérer les dernières notifications d'un utilisateur.
 #[ODM\Index(keys: ['userId' => 'asc', 'createdAt' => 'desc'])]
 // Index Composé 2 : Pour optimiser les tâches backend de traitement des envois.

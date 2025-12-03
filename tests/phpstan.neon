@@ -1,0 +1,11 @@
+includes:
+    - ../vendor/phpstan/phpstan-symfony/extension.neon
+
+parameters:
+    reportUnmatchedIgnoredErrors: false
+    level: 8
+    paths:
+        - ../src
+
+
+

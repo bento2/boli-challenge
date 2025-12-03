@@ -26,7 +26,14 @@ RUN install-php-extensions intl mongodb amqp zip opcache
 
 # Installation de Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+# Installation de PHPStan (via Composer global)
+RUN composer global require phpstan/phpstan phpcompatibility/php-compatibility "squizlabs/php_codesniffer=*"
 
+# Ajouter le binaire Composer global au PATH
+ENV PATH="$PATH:/root/.composer/vendor/bin"
+RUN phpcs --config-set installed_paths /root/.composer/vendor/phpcompatibility/php-compatibility/, /root/.composer/vendor/phpcs/phpcs/CodeSniffer/Standards/
+#Installation de PHP CS Fixer
+RUN curl -L https://github.com/FriendsOfPHP/PHP-CS-Fixer/releases/latest/download/php-cs-fixer.phar -o /usr/local/bin/php-cs-fixer && chmod +x /usr/local/bin/php-cs-fixer
 
 # On définit le dossier de travail
 WORKDIR /var/www/html

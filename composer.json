@@ -9,6 +9,7 @@
         "ext-iconv": "*",
         "doctrine/mongodb-odm": "^2.15",
         "doctrine/mongodb-odm-bundle": "^5.5",
+        "phpstan/phpstan-symfony": "^2.0",
         "symfony/amqp-messenger": "7.3.*",
         "symfony/console": "7.3.*",
         "symfony/dotenv": "7.3.*",

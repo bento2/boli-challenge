@@ -4,10 +4,11 @@ doctrine_mongodb:
     connections:
         # Connexion pour la base de test
         test:
-            server: "%env(MONGODB_URI)%"
+            server: "%env(string:MONGODB_URI)%"
             options:
-                username: "%env(MONGODB_USERNAME)%"
-                password: "%env(MONGODB_PASSWORD)%"
+                username: "%env(string:MONGODB_USERNAME)%"
+                password: "%env(string:MONGODB_PASSWORD)%"
+                authSource: admin
 
         # Connexion pour la base diabetes
         diabetes:
@@ -29,7 +30,7 @@ doctrine_mongodb:
             options:
                 username: "%env(MONGODB_USERNAME)%"
                 password: "%env(MONGODB_PASSWORD)%"
-    default_database: "diabetes"
+    default_database: "test"
     document_managers:
         # Document Manager pour test
         test:
@@ -38,8 +39,8 @@ doctrine_mongodb:
             mappings:
                 Test:
                     type: attribute
-                    dir: "%kernel.project_dir%/src/Document/Test"
-                    prefix: 'App\Document\Test'
+                    dir: "%kernel.project_dir%/src/Document"
+                    prefix: 'App\Document'
                     is_bundle: false
 
         # Document Manager pour diabetes (par défaut)

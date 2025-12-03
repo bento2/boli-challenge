@@ -13,6 +13,9 @@ services:
       MONGODB_USER: test
       MONGODB_PASSWORD: test
       MONGODB_AUTHENTICATION_DATABASE: admin
+      MONGO_INITDB_ROOT_USERNAME: test
+      MONGO_INITDB_ROOT_PASSWORD: test
+      MONGO_INITDB_DATABASE: test
     healthcheck:
       test: ["CMD", "mongosh", "--eval", "db.adminCommand({ping: 1})"]
       interval: 10s

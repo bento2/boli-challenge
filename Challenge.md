@@ -94,7 +94,7 @@ Créer un document `Notification` avec les champs suivants :
 **Contraintes** :
 - Index composé sur `userId` et `createdAt` (descendant)
 - Index sur `status` et `serviceName`
-- Index TTL sur `createdAt` (expiration après 90 jours)
+- Index TTL sur `createdAt` (expiration après 90 jours) 
 
 #### 2.2 Repository avec requêtes complexes
 Créer un `NotificationRepository` avec les méthodes suivantes :

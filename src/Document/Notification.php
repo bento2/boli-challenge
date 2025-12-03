@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace App\Document;
 
+use App\Enum\NotificationServiceName;
+use App\Enum\NotificationStatus;
 use App\Enum\NotificationTypes;
 use DateTimeImmutable;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Symfony\Component\Validator\Constraints as Assert;
+
 
 /**
  * Mappage du document avec les index composés.
@@ -17,6 +20,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ODM\Index(keys: ['userId' => 'asc', 'createdAt' => 'desc'])]
 // Index Composé 2 : Pour optimiser les tâches backend de traitement des envois.
 #[ODM\Index(keys: ['status' => 'asc', 'serviceName' => 'asc'])]
+// Aucune idée pour le TTL
+#[ODM\HasLifecycleCallbacks]
 class Notification
 {
     /**
@@ -71,6 +76,7 @@ class Notification
      * Statut de livraison (pending|sent|failed).
      */
     #[ODM\Field(type: 'string')]
+    #[Assert\Choice(callback: [NotificationStatus::class, 'getValues'])]
     private string $status = 'pending';
 
     /**
@@ -92,6 +98,7 @@ class Notification
      * Le service source (diabetes|wellness|maternity).
      */
     #[ODM\Field(type: 'string')]
+    #[Assert\Choice(callback: [NotificationServiceName::class, 'getValues'])]
     private string $serviceName;
 
     /**
@@ -101,7 +108,6 @@ class Notification
     #[ODM\Field(type: 'date', nullable: true)]
     private ?\DateTimeInterface $readAt = null;
 
-    // --- Constructor & Getters/Setters (omitted for brevity) ---
     public function __construct(string $userId, string $type, string $title, string $body, string $serviceName, array $data = [])
     {
         $this->userId = $userId;
@@ -184,7 +190,7 @@ class Notification
         return $this->status;
     }
 
-    public function setStatus(string $status):  self
+    public function setStatus(string $status): self
     {
         $this->status = $status;
         return $this;
@@ -210,6 +216,14 @@ class Notification
     {
         $this->createdAt = $createdAt;
         return $this;
+    }
+
+    #[ODM\PrePersist]
+    public function setCreatedAtValue(): void
+    {
+        if (!$this->createdAt) {
+            $this->createdAt = new \DateTimeImmutable();
+        }
     }
 
     public function getServiceName(): string

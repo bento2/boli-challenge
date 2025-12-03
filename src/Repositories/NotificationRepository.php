@@ -39,9 +39,16 @@ class NotificationRepository extends DocumentRepository
      * - Compte les notifications par statut et service dans une période
      * - Utilise une agrégation MongoDB optimisée
      */
-    public function countByStatusAndService(string $status, string $serviceName, \DateTime $startDate, \DateTime $endDate):int
+    public function countByStatusAndService(string $status, string $serviceName, \DateTimeInterface $startDate, \DateTimeInterface $endDate):int
     {
 
+        return $this->createQueryBuilder()
+            ->field('status')->equals($status)
+            ->field('serviceName')->equals($serviceName)
+            ->field('createdAt')->gte($startDate)
+            ->field('createdAt')->lte($endDate)
+            ->getQuery()
+            ->execute()->count();
     }
 
     public function getStatisticsByService(string $serviceName, \DateTime $startDate, \DateTime $endDate)

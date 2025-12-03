@@ -4,6 +4,7 @@ namespace App\Tests\Repositories;
 
 use App\Document\Notification;
 use App\Enum\NotificationServiceName;
+use App\Enum\NotificationStatus;
 use App\Enum\NotificationTypes;
 use App\Repositories\NotificationRepository;
 use Doctrine\ODM\MongoDB\DocumentManager;
@@ -91,7 +92,33 @@ class NotificationRepositoryTest extends KernelTestCase
 
         $unreadNotifications = $this->repository->findUnreadByUser($userId,NotificationServiceName::DIABETES->value,5);
         $this->assertCount(5, $unreadNotifications);
+    }
 
+    public function testCountByStatusAndService()
+    {
+        $userId = "user-4";
+        $now = (new \DateTime())->modify('+10 minutes');
+        $yesterday = (new \DateTime())->modify('-1 day');
+        $notificationMaternity = new Notification($userId, NotificationTypes::INFO->value, "Non lue 1", "Le message non lu", NotificationServiceName::MATERNITY->value, []);
+        $notificationDiabetesAlert = new Notification($userId, NotificationTypes::ALERT->value, "Non lue 2", "Le message non lu 2", NotificationServiceName::DIABETES->value, []);
+        $notificationDiabetesInfo = new Notification($userId, NotificationTypes::INFO->value, "lue 1", "Le message lu", NotificationServiceName::DIABETES->value, []);
+
+        $this->dm->persist($notificationMaternity);
+        $this->dm->persist($notificationDiabetesInfo);
+        $this->dm->persist($notificationDiabetesAlert);
+        $this->dm->flush();
+
+        //test 0 notification
+        $result = $this->repository->countByStatusAndService(NotificationStatus::PENDING->value,NotificationServiceName::WELLNESS->value,$yesterday,$now);
+        $this->assertEquals(0, $result);
+
+        //test 1 notification
+        $result = $this->repository->countByStatusAndService(NotificationStatus::PENDING->value,NotificationServiceName::MATERNITY->value,$yesterday,$now);
+        $this->assertEquals(1, $result);
+
+        //test 2 notifications
+        $result = $this->repository->countByStatusAndService(NotificationStatus::PENDING->value,NotificationServiceName::DIABETES->value,$yesterday,$now);
+        $this->assertEquals(2, $result);
 
     }
 }

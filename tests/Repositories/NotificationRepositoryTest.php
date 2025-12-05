@@ -198,6 +198,31 @@ class NotificationRepositoryTest extends KernelTestCase
         $this->assertEquals(0, $stats['avgProcessingTime']);
     }
 
+    public function testGetStatisticsByServiceWithZeroSuccessRate(): void
+    {
+        $userId = "user-8";
+        $yesterday = (new \DateTime())->modify('-1 day');
+        $tomorrow = (new \DateTime())->modify('+1 day');
+
+        // Create 5 pending notifications (not yet attempted)
+        for ($i = 0; $i < 5; $i++) {
+            $notification = new Notification($userId, NotificationTypes::INFO->value, "Pending $i", "Body", NotificationServiceName::DIABETES->value, []);
+            $notification->setStatus(NotificationStatus::PENDING->value);
+            $this->dm->persist($notification);
+        }
+
+        $this->dm->flush();
+
+        $stats = $this->repository->getStatisticsByService(NotificationServiceName::DIABETES->value, $yesterday, $tomorrow);
+
+        // Should have notifications but 0% success rate (no sent or failed)
+        $this->assertEquals(5, $stats['total']);
+        $this->assertEquals(5, $stats['byStatus'][NotificationStatus::PENDING->value]);
+        $this->assertEquals(0, $stats['successRate']); // 0% because no attempts (sent + failed = 0)
+        $this->assertEquals(0, $stats['avgProcessingTime']);
+    }
+
+
     public function testFindFailedNotificationsOlderThan(): void
     {
         $userId = "user-6";

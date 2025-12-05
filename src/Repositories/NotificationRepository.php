@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use Doctrine\ODM\MongoDB\Repository\DocumentRepository;
+use App\Enum\NotificationStatus;
 
 class NotificationRepository extends DocumentRepository
 {
@@ -177,7 +178,7 @@ class NotificationRepository extends DocumentRepository
         $threshold->modify("-{$hours} hours");
 
         return $this->createQueryBuilder()
-            ->field('status')->equals('failed')
+            ->field('status')->equals(NotificationStatus::FAILED->value)
             ->field('createdAt')->lt($threshold)
             ->sort('createdAt', 'ASC') // Oldest first for retry processing
             ->getQuery()

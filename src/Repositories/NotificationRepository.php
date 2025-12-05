@@ -51,14 +51,137 @@ class NotificationRepository extends DocumentRepository
             ->execute()->count();
     }
 
-    public function getStatisticsByService(string $serviceName, \DateTime $startDate, \DateTime $endDate)
+    /**
+     * @param string $serviceName
+     * @param \DateTime $startDate
+     * @param \DateTime $endDate
+     * @return array
+     * - Retourne des statistiques complètes :
+     *   - Total de notifications
+     *   - Par type (alert, reminder, info)
+     *   - Par statut (pending, sent, failed)
+     *   - Taux de succès (%)
+     *   - Temps moyen de traitement (différence entre createdAt et sentAt)
+     * - Utilise une pipeline d'agrégation MongoDB
+     */
+    public function getStatisticsByService(string $serviceName, \DateTime $startDate, \DateTime $endDate): array
     {
+        // Get total count
+        $totalCount = $this->createQueryBuilder()
+            ->field('serviceName')->equals($serviceName)
+            ->field('createdAt')->gte($startDate)
+            ->field('createdAt')->lte($endDate)
+            ->count()
+            ->getQuery()
+            ->execute();
 
+        if ($totalCount === 0) {
+            return [
+                'total' => 0,
+                'byType' => [],
+                'byStatus' => [],
+                'successRate' => 0,
+                'avgProcessingTime' => 0,
+            ];
+        }
+
+        // Group by type
+        $byTypeBuilder = $this->createAggregationBuilder();
+        $byTypeBuilder
+            ->match()
+                ->field('serviceName')->equals($serviceName)
+                ->field('createdAt')->gte($startDate)
+                ->field('createdAt')->lte($endDate)
+            ->group()
+                ->field('_id')->expression('$type')
+                ->field('count')->sum(1);
+
+        $byTypeResult = $byTypeBuilder->getAggregation()->getIterator()->toArray();
+        $byType = [];
+        foreach ($byTypeResult as $item) {
+            $byType[$item['_id']] = (int)$item['count'];
+        }
+
+        // Group by status
+        $byStatusBuilder = $this->createAggregationBuilder();
+        $byStatusBuilder
+            ->match()
+                ->field('serviceName')->equals($serviceName)
+                ->field('createdAt')->gte($startDate)
+                ->field('createdAt')->lte($endDate)
+            ->group()
+                ->field('_id')->expression('$status')
+                ->field('count')->sum(1);
+
+        $byStatusResult = $byStatusBuilder->getAggregation()->getIterator()->toArray();
+        $byStatus = [];
+        $sentCount = 0;
+        $failedCount = 0;
+        foreach ($byStatusResult as $item) {
+            $byStatus[$item['_id']] = (int)$item['count'];
+            if ($item['_id'] === 'sent') {
+                $sentCount = (int)$item['count'];
+            } elseif ($item['_id'] === 'failed') {
+                $failedCount = (int)$item['count'];
+            }
+        }
+
+        // Calculate success rate
+        $totalAttempted = $sentCount + $failedCount;
+        $successRate = $totalAttempted > 0
+            ? round(($sentCount / $totalAttempted) * 100, 2)
+            : 0;
+
+        // Calculate average processing time for sent notifications
+        $avgProcessingTime = 0;
+        $avgBuilder = $this->createAggregationBuilder();
+        $avgBuilder
+            ->match()
+                ->field('serviceName')->equals($serviceName)
+                ->field('createdAt')->gte($startDate)
+                ->field('createdAt')->lte($endDate)
+                ->field('status')->equals('sent')
+                ->field('sentAt')->notEqual(null)
+            ->group()
+                ->field('_id')->expression(null)
+                ->field('avgTime')->avg(
+                    $avgBuilder->expr()->subtract('$sentAt', '$createdAt')
+                );
+
+        $avgResult = $avgBuilder->getAggregation()->getIterator()->toArray();
+        if (!empty($avgResult) && !empty($avgResult[0]['avgTime'])) {
+            // Convert milliseconds to seconds
+            $avgProcessingTime = round($avgResult[0]['avgTime'] / 1000);
+        }
+
+        return [
+            'total' => $totalCount,
+            'byType' => $byType,
+            'byStatus' => $byStatus,
+            'successRate' => $successRate,
+            'avgProcessingTime' => $avgProcessingTime,
+        ];
     }
 
-    public function findFailedNotificationsOlderThan(int $hours)
+    /**
+     * @param int $hours
+     * @return array
+     * - Trouve les notifications en échec plus anciennes que X heures
+     * - Pour retry automatique
+     * - Utilise une requête avec opérateurs MongoDB
+     */
+    public function findFailedNotificationsOlderThan(int $hours): array
     {
+        // Calculate the threshold datetime
+        $threshold = new \DateTime();
+        $threshold->modify("-{$hours} hours");
 
+        return $this->createQueryBuilder()
+            ->field('status')->equals('failed')
+            ->field('createdAt')->lt($threshold)
+            ->sort('createdAt', 'ASC') // Oldest first for retry processing
+            ->getQuery()
+            ->execute()
+            ->toArray();
     }
-
 }

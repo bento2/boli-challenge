@@ -8,11 +8,12 @@
 /var/
 /vendor/
 ###< symfony/framework-bundle ###
+/coverage/
+/private/
+/.idea
+/.phpunit.cache/
 
 ###> phpunit/phpunit ###
 /phpunit.xml
 /.phpunit.cache/
 ###< phpunit/phpunit ###
-/private/*
-/coverage
-/.idea

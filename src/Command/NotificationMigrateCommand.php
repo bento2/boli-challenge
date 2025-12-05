@@ -274,6 +274,7 @@ class NotificationMigrateCommand extends Command
             $dm->getClient()->startSession();
         }
 
+
         try {
             $cursor = $collection->find([], [
                 'skip' => $offset,
@@ -301,7 +302,7 @@ class NotificationMigrateCommand extends Command
             }
 
             if ($supportsTransactions && !$isDryRun) {
-                // Commit would happen here in a real transaction
+                $dm->getClient()->commitTransaction();
             }
 
             return [
@@ -312,7 +313,7 @@ class NotificationMigrateCommand extends Command
 
         } catch (\Exception $e) {
             if ($supportsTransactions && !$isDryRun) {
-                // Rollback would happen here
+                $dm->getClient()->abortTransaction();
             }
             throw $e;
         }

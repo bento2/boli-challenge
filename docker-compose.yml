@@ -1,78 +1,76 @@
 services:
-  # service 1 MongoDB https://www.mongodb.com/resources/products/compatibilities/docker
-  database:
-    #pour le moment la dernier qui est la 8
-    image: mongo:latest
-    container_name: notification-mongo
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongodb_data:/data/db
-    environment:
-      MONGODB_DATABASE: test
-      MONGODB_USER: test
-      MONGODB_PASSWORD: test
-      MONGODB_AUTHENTICATION_DATABASE: admin
-      MONGO_INITDB_ROOT_USERNAME: test
-      MONGO_INITDB_ROOT_PASSWORD: test
-      MONGO_INITDB_DATABASE: test
-    healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.adminCommand({ping: 1})"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+    # service 1 MongoDB https://www.mongodb.com/resources/products/compatibilities/docker
+    database:
+        #pour le moment la dernier qui est la 8
+        image: mongo:latest
+        container_name: notification-mongo
+        ports:
+            - "27017:27017"
+        tmpfs:
+            - /data/db
+        environment:
+            MONGODB_DATABASE: test
+            MONGODB_USER: test
+            MONGODB_PASSWORD: test
+            MONGODB_AUTHENTICATION_DATABASE: admin
+            MONGO_INITDB_ROOT_USERNAME: test
+            MONGO_INITDB_ROOT_PASSWORD: test
+            MONGO_INITDB_DATABASE: test
+        healthcheck:
+            test: ["CMD", "mongosh", "--eval", "db.adminCommand({ping: 1})"]
+            interval: 10s
+            timeout: 5s
+            retries: 5
 
-  # service 2 RabbitMQ https://medium.com/@kaloyanmanev/how-to-run-rabbitmq-in-docker-compose-e5baccc3e644
-  rabbitmq:
-    image: rabbitmq:latest
-    container_name: notification-rabbitmq
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-    environment:
-      RABBITMQ_DEFAULT_USER: test
-      RABBITMQ_DEFAULT_PASS: test
-    healthcheck:
-      test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
-      interval: 30s
-      timeout: 30s
-      retries: 3
+    # service 2 RabbitMQ https://medium.com/@kaloyanmanev/how-to-run-rabbitmq-in-docker-compose-e5baccc3e644
+    rabbitmq:
+        image: rabbitmq:latest
+        container_name: notification-rabbitmq
+        ports:
+            - "5672:5672"
+            - "15672:15672"
+        environment:
+            RABBITMQ_DEFAULT_USER: test
+            RABBITMQ_DEFAULT_PASS: test
+        healthcheck:
+            test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
+            interval: 30s
+            timeout: 30s
+            retries: 3
 
-  # service 3 PHP https://hub.docker.com/_/php
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: notification-app
-    ports:
-      - "8009:8009"
-    volumes:
-      # Synchronisation du dossier local avec le conteneur
-      - ./:/var/www/html
-    depends_on:
-      # Assure que les dépendances sont saines avant de démarrer l'app
-      database:
-        condition: service_healthy
-      rabbitmq:
-        condition: service_healthy
-    # COMMANDE MISE À JOUR : Maintenant, il reste en vie pour qu'on puisse installer Symfony dedans.
+    # service 3 PHP https://hub.docker.com/_/php
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: notification-app
+        ports:
+            - "8009:8009"
+        volumes:
+            # Synchronisation du dossier local avec le conteneur
+            - ./:/var/www/html
+        depends_on:
+            # Assure que les dépendances sont saines avant de démarrer l'app
+            database:
+                condition: service_healthy
+            rabbitmq:
+                condition: service_healthy
+        # COMMANDE MISE À JOUR : Maintenant, il reste en vie pour qu'on puisse installer Symfony dedans.
 
-
-###> doctrine/mongodb-odm-bundle ###
-  mongodb:
-    # In production, you may want to use a managed database service
-    image: mongodb/mongodb-atlas-local:latest
-    environment:
-      - MONGODB_INITDB_DATABASE=${MONGODB_DB:-app}
-      # You should definitely set a root username and password in production
-      - MONGODB_INITDB_ROOT_USERNAME=${MONGODB_USERNAME:-}
-      - MONGODB_INITDB_ROOT_PASSWORD=${MONGODB_PASSWORD:-}
-    volumes:
-      - mongodb_data:/data/db:rw
-      # You may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
-      # - ./docker/mongodb/data:/data/db:rw
+    ###> doctrine/mongodb-odm-bundle ###
+    mongodb:
+        # In production, you may want to use a managed database service
+        image: mongodb/mongodb-atlas-local:latest
+        environment:
+            - MONGODB_INITDB_DATABASE=${MONGODB_DB:-app}
+            # You should definitely set a root username and password in production
+            - MONGODB_INITDB_ROOT_USERNAME=${MONGODB_USERNAME:-}
+            - MONGODB_INITDB_ROOT_PASSWORD=${MONGODB_PASSWORD:-}
+        volumes:
+            - mongodb_data:/data/db:rw
+            # You may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
+            # - ./docker/mongodb/data:/data/db:rw
 ###< doctrine/mongodb-odm-bundle ###
 
 volumes:
-  mongodb_data:
-
+    mongodb_data:

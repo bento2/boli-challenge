@@ -49,7 +49,7 @@ class NotificationMigrateIntegrationTest extends KernelTestCase
         parent::tearDown();
     }
 
-   /**public function testMigrationWithNoDocuments(): void
+    public function testMigrationWithNoDocuments(): void
     {
         $command = $this->createCommand();
         $commandTester = new CommandTester($command);
@@ -62,7 +62,7 @@ class NotificationMigrateIntegrationTest extends KernelTestCase
         $this->assertEquals(0, $commandTester->getStatusCode());
         $output = $commandTester->getDisplay();
         $this->assertStringContainsString('No documents to migrate', $output);
-    }**/
+    }
 
     public function testMigrationWithValidDocuments(): void
     {
